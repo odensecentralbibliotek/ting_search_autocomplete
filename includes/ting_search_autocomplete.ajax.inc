@@ -62,17 +62,33 @@ function ting_search_autocomplete_get_suggestions($query) {
   // minimumString is not an openSuggestion parameter
   unset($settings['minimumString']);
 
-  $rest_url = $rest_url . 'rest/facetSpell';
+  $rest_url = $rest_url . 'rest/terms/';
   $settings['query'] = $query;
-  $url = url($rest_url, array('query' => $settings));
+  //$url = url($rest_url, array('query' => $settings));
+  $url_query = "";
+  $count = 0;
+  foreach($settings as $key => $setting)
+  {
+      $setting = urlencode($setting);
+      if($count == 0)
+      {
+          $url_query .= "{$key}={$setting}";
+      }
+      else
+      {
+          $url_query .= "&{$key}={$setting}";
+      }
+      $count++;
+  }
+  $url = $rest_url ."?".$url_query;
   $result = drupal_http_request($url, array());
 
   if (!empty($result->data)) {
     $result_data = drupal_json_decode($result->data);
     if (empty($result->error)) {
       if (!empty($result_data['suggestions'])) {
-        foreach ($result_data['suggestions'] as $suggestion) {
-          $items[truncate_utf8(strip_tags($suggestion['phrase']), 256, TRUE, FALSE, 1)] = $suggestion['phrase'];
+        foreach ($result_data['suggestions'] as $index => $suggestion) {
+          $items[$index] = array('label' => $suggestion['suggestion'],'value' => strip_tags($suggestion['suggestion']),'category' => "forslag" );
         }
       }
     }
@@ -81,6 +97,6 @@ function ting_search_autocomplete_get_suggestions($query) {
     }
   }
 
-
+  
   return $items;
 }

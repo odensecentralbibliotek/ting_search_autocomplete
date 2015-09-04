@@ -43,18 +43,22 @@ function ting_search_autocomplete_flush_caches() {
  * Implements hook_form_alter().
  *
  * Adds CSS and JS to the ting search form.
- */
-function ting_search_autocomplete_form_search_block_form_alter(&$form, &$form_state) {
+ 
+function ting_search_autocomplete_form_search_form_alter(&$form, &$form_state) {
+  //fynbib search form.
+  $form['basic']['keys']['#autocomplete_path'] = 'ting/autocomplete';
+  $form['basic']['keys']['#attributes']['class'] = array('auto-submit');
+  
   $form['search_block_form']['#autocomplete_path'] = 'ting/autocomplete';
 
-  // Add class to make sure that the form is auto-submitted.
-  $form['search_block_form']['#attributes']['class'] = array('auto-submit');
+  //Add class to make sure that the form is auto-submitted.
+  //$form['search_block_form']['#attributes']['class'] = array('auto-submit');
 
-  // Modify the core auto-complete behaviour to search on enter. It has a high
+   Modify the core auto-complete behaviour to search on enter. It has a high
   // weight to ensure that it's include after core auto complete script.
-  drupal_add_js(drupal_get_path('module', 'ting_search_autocomplete') . '/js/ting_search_autocomplete.js', array('weight' => 1000));
+  // drupal_add_js(drupal_get_path('module', 'ting_search_autocomplete') . '/js/ting_search_autocomplete.js', array('weight' => 1000));
 }
-
+*/
 
 /**
  * Get settings, and merge with defaults.
