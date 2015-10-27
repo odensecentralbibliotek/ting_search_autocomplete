@@ -73,8 +73,21 @@ function ting_search_autocomplete_get_suggestions($query) {
     $result_data = drupal_json_decode($result->data);
     if (empty($result->error)) {
       if (!empty($result_data['suggestions'])) {
-        foreach ($result_data['suggestions'] as $suggestion) {
-          $items[truncate_utf8(strip_tags($suggestion['suggestion']), 256, TRUE, FALSE, 1)] = $suggestion['suggestion'];
+        foreach ($result_data['suggestions'] as $index => $suggestion) {
+          /*
+           * Autocomplete module does not like ding's way.
+           */
+           //$items[truncate_utf8(strip_tags($suggestion['suggestion']), 256, TRUE, FALSE, 1)] = $suggestion['suggestion'];
+            if(isset($suggestion['suggestion']))
+            {
+                 $items[$index] = array('label' => $suggestion['suggestion'],'value' => strip_tags($suggestion['suggestion']),'category' => "forslag" );
+            }
+            elseif($suggestion['phrase'])
+            {
+                 $items[$index] = array('label' => $suggestion['phrase'],'value' => strip_tags($suggestion['phrase']),'category' => "forslag" );
+            }
+           
+            
         }
       }
     }
